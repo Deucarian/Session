@@ -1,0 +1,25 @@
+{
+    "name": "SessionHelper.APIHelper.Tests",
+    "rootNamespace": "JorisHoef.SessionHelper.APIHelper.Tests",
+    "references": [
+        "SessionHelper",
+        "SessionHelper.APIHelper",
+        "APIHelper"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "SESSION_HELPER_APIHELPER"
+    ],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "noEngineReferences": false
+}

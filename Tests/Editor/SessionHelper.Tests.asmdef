@@ -1,0 +1,21 @@
+{
+    "name": "SessionHelper.Tests",
+    "rootNamespace": "JorisHoef.SessionHelper.Tests",
+    "references": [
+        "SessionHelper"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "noEngineReferences": false
+}

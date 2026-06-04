@@ -1,0 +1,33 @@
+{
+  "name": "com.jorishoef.session-helper",
+  "version": "0.1.0",
+  "displayName": "Session Helper",
+  "description": "A standalone Unity package for storing, restoring, refreshing, and observing authenticated session state.",
+  "unity": "2021.3",
+  "author": {
+    "name": "Joris Hoef"
+  },
+  "dependencies": {
+    "com.unity.modules.jsonserialize": "1.0.0"
+  },
+  "keywords": [
+    "session",
+    "authentication",
+    "auth",
+    "token",
+    "login",
+    "unity"
+  ],
+  "samples": [
+    {
+      "displayName": "Basic Session Usage",
+      "description": "Minimal fake login, restore, refresh, and logout scripts without UI dependencies.",
+      "path": "Samples~/BasicUsage"
+    },
+    {
+      "displayName": "APIHelper Integration",
+      "description": "Minimal code sample showing how to pass SessionHelper tokens to APIHelper through IApiAuthProvider.",
+      "path": "Samples~/APIHelperIntegration"
+    }
+  ]
+}

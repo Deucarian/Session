@@ -1,0 +1,16 @@
+{
+    "name": "SessionHelper.Samples",
+    "rootNamespace": "JorisHoef.SessionHelper.Samples",
+    "references": [
+        "SessionHelper"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
