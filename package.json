@@ -21,7 +21,7 @@
   "samples": [
     {
       "displayName": "Basic Session Usage",
-      "description": "Minimal fake login, restore, refresh, and logout scripts without UI dependencies.",
+      "description": "Minimal fake login, restore, refresh, logout, and store clearing scene using standalone SessionHelper APIs.",
       "path": "Samples~/BasicUsage"
     },
     {
