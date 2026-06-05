@@ -1,25 +1,62 @@
 # Session Helper
 
-Session Helper is a standalone Unity UPM package for session lifecycle management. It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when the session changes.
+## Overview
 
-Package name: `com.jorishoef.session-helper`
+Session Helper is a standalone Unity UPM package for authenticated session lifecycle management.
 
-## What It Provides
+It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-- `ISessionService` for login, logout, restore, refresh, and state checks.
-- `ISessionStore` for persistence.
-- `ISessionLoginService<TLoginRequest>` for backend-specific login.
-- `ISessionRefreshService` for backend-specific refresh.
-- `SessionData` with access token, optional refresh token, and optional expiry time.
-- `InMemorySessionStore` for tests and temporary sessions.
-- `PlayerPrefsSessionStore` for simple local persistence.
-- Optional `SessionAuthProvider` adapter for APIHelper's `IApiAuthProvider`.
+Package ID: `com.jorishoef.session-helper`
 
-The package does not include UI, does not require a Unity scene, and does not assume one backend response shape.
+## Installation
 
-## Standalone Usage
+Install the package through Unity Package Manager with a Git URL:
 
-Create your backend-specific login service by implementing `ISessionLoginService<TLoginRequest>`:
+```json
+{
+  "dependencies": {
+    "com.jorishoef.session-helper": "https://github.com/JorisHoef/Session-Helper.git#main"
+  }
+}
+```
+
+For development builds, use:
+
+```json
+"com.jorishoef.session-helper": "https://github.com/JorisHoef/Session-Helper.git#develop"
+```
+
+The package requires Unity `2021.3` or newer and depends on `com.unity.modules.jsonserialize`.
+
+## Core Concepts
+
+`SessionService` coordinates restore, login, refresh, logout, state calculation, persistence, and change events.
+
+`SessionData` is immutable token data: access token, optional refresh token, and optional UTC access-token expiry.
+
+`ISessionStore` abstracts persistence. The package includes `InMemorySessionStore` and `PlayerPrefsSessionStore`.
+
+`ISessionLoginService<TLoginRequest>` and `ISessionRefreshService` are application-specific backend adapters. Session Helper does not assume one login request shape or backend response shape.
+
+`SessionResult` wraps successful session operations or a `SessionError` with a stable code, message, and optional exception.
+
+## Public API
+
+- `ISessionService`: login, logout, restore, refresh, current session, state checks, and `SessionChanged`.
+- `SessionService`: default service implementation.
+- `SessionData`: access token, refresh token, expiry, and expiry helper methods.
+- `SessionState`: `Unauthenticated`, `Authenticated`, or `Expired`.
+- `SessionChangedEventArgs` and `SessionChangeReason`: change event details.
+- `ISessionStore`: persistence contract.
+- `InMemorySessionStore`: memory-only store for tests, tools, or temporary sessions.
+- `PlayerPrefsSessionStore`: simple PlayerPrefs-backed store.
+- `ISessionLoginService<TLoginRequest>`: backend login adapter.
+- `ISessionRefreshService`: backend refresh adapter.
+- `SessionRefreshFailurePolicy`: preserve or clear the current session after failed refresh.
+- `SessionResult` and `SessionError`: operation result and failure details.
+- `SessionAuthProvider`: optional APIHelper adapter in the `SessionHelper.APIHelper` assembly.
+
+Standalone workflow:
 
 ```csharp
 using System;
@@ -35,9 +72,10 @@ public sealed class LoginRequest
 
 public sealed class MyLoginService : ISessionLoginService<LoginRequest>
 {
-    public async Task<SessionResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<SessionResult> LoginAsync(
+        LoginRequest request,
+        CancellationToken cancellationToken)
     {
-        // Call your backend here and map its response into SessionData.
         await Task.Yield();
 
         return SessionResult.Success(
@@ -62,7 +100,7 @@ var sessionService = new SessionService(
 
 sessionService.SessionChanged += (sender, args) =>
 {
-    UnityEngine.Debug.Log($"Session changed: {args.PreviousState} -> {args.CurrentState}");
+    UnityEngine.Debug.Log(args.Reason + ": " + args.PreviousState + " -> " + args.CurrentState);
 };
 
 await sessionService.RestoreAsync();
@@ -78,40 +116,46 @@ if (sessionService.IsAccessTokenExpiringSoon)
 }
 ```
 
-`IsAuthenticated` is true only when an access token exists and is not expired. A session without an expiry time is treated as authenticated until it is explicitly cleared or replaced.
+## Samples
 
-## Refresh Failure Policy
+The package contains two sample entries.
 
-`SessionRefreshFailurePolicy.PreserveSession` keeps the current session if refresh fails. This is useful when the current token may still be accepted.
+`Basic Session Usage`:
 
-`SessionRefreshFailurePolicy.ClearSession` clears the store and in-memory state if refresh fails. This is useful when a failed refresh means the user must authenticate again.
+- Path: `Samples~/BasicUsage`
+- Scene: `BasicUsage.unity`
+- Scripts: `SessionHelperSampleController`, `FakeSessionLoginService`, `FakeSessionRefreshService`, and `FakeLoginRequest`
 
-## Storage
+Open the scene and enter Play Mode. The sample uses IMGUI buttons for fake login, restore, refresh, logout, and clearing the persisted sample store.
 
-Use `InMemorySessionStore` for tests, tools, or sessions that should disappear when the app closes.
+`APIHelper Integration`:
 
-Use `PlayerPrefsSessionStore` for simple local persistence:
+- Path: `Samples~/APIHelperIntegration`
+- Script: `ApiHelperSessionAdapterSample`
 
-```csharp
-var store = new PlayerPrefsSessionStore("com.example.game.session");
+This sample shows how to configure APIHelper with a Session Helper-backed auth provider. It compiles only when APIHelper is installed and `SESSION_HELPER_APIHELPER` is enabled.
+
+## Integrations
+
+Session Helper has one optional integration: APIHelper authentication.
+
+The integration assembly is `SessionHelper.APIHelper`. It references `SessionHelper` and `APIHelper`, and has this define constraint:
+
+```text
+SESSION_HELPER_APIHELPER
 ```
 
-For production apps, consider implementing `ISessionStore` with platform-secure storage if tokens need stronger protection than PlayerPrefs.
+Enable the integration by:
 
-## APIHelper Integration
+1. Installing APIHelper in the same Unity project.
+2. Adding `SESSION_HELPER_APIHELPER` to scripting define symbols.
+3. Referencing `SessionHelper.APIHelper` from your own asmdef if your code uses asmdefs.
 
-Session Helper can integrate with APIHelper without modifying APIHelper. The optional adapter implements APIHelper's `IApiAuthProvider` and returns the current Session Helper access token. APIHelper adds the `Authorization: Bearer` header itself.
-
-Because Session Helper must remain standalone, the APIHelper adapter is compiled only when you opt in:
-
-1. Install APIHelper in the same Unity project.
-2. Add `SESSION_HELPER_APIHELPER` to the project's scripting define symbols.
-3. Reference `SessionHelper.APIHelper` from your own asmdef if your code uses asmdefs.
-
-Example:
+Usage:
 
 ```csharp
-using JorisHoef.APIHelper.Services;
+using JorisHoef.APIHelper.Configuration;
+using JorisHoef.APIHelper.Core;
 using JorisHoef.SessionHelper;
 using JorisHoef.SessionHelper.APIHelper;
 
@@ -120,19 +164,26 @@ ISessionService sessionService = new SessionService(
     new MyRefreshService());
 
 var authProvider = new SessionAuthProvider(sessionService);
-ApiServices.Configure(config, authProvider);
+IApiClient apiClient = ApiClientFactory.Create(apiClientConfig, authProvider);
 ```
 
-The adapter returns `null` when the session is unauthenticated or expired and cannot be refreshed, so APIHelper will omit the bearer token.
+`SessionAuthProvider` returns `null` when there is no authenticated session. By default, it tries to refresh when the current access token is expired or expiring soon.
 
-## Samples
+## Versioning
 
-The `Basic Session Usage` sample contains fake login, refresh, restore, and logout scripts that can be dropped into any scene or called from code.
+Current package version: `1.0.0`.
 
-The `APIHelper Integration` sample is gated by `SESSION_HELPER_APIHELPER` and demonstrates constructing the adapter for APIHelper.
+Branch strategy:
 
-## Tests
+- `main`: stable package branch.
+- `develop`: development package branch.
 
-Editor tests cover login, logout, restore, expiry detection, refresh, refresh failure policy, session change events, and APIHelper adapter behavior.
+Use branch refs for active development and stable release tags when tags are available.
 
-APIHelper adapter tests are also gated by `SESSION_HELPER_APIHELPER` because they intentionally compile against APIHelper's `IApiAuthProvider`.
+## Limitations
+
+- Session Helper does not include backend HTTP calls. Implement login and refresh services for your backend.
+- `PlayerPrefsSessionStore` is convenient but not secure token storage. Use a custom `ISessionStore` for stronger protection.
+- The package does not run an automatic background refresh loop.
+- The package does not include runtime UI beyond samples.
+- APIHelper integration is optional and compile-gated; the base `SessionHelper` assembly remains standalone.

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Improved README structure and clarified public APIs, samples, APIHelper integration, versioning, and limitations.
+
 ## 1.0.0
 
 - Initial package scaffold.
