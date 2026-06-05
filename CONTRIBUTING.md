@@ -10,9 +10,8 @@ Thanks for helping improve Session Helper.
 - Keep persistence, login, and refresh behavior behind interfaces.
 - Add XML documentation for public runtime APIs.
 - Add editor tests for behavior changes.
+- Keep APIHelper integration in the separate `com.jorishoef.session-helper.api-helper` bridge package.
 
 ## Testing
 
 Run the package editor tests from Unity's Test Runner.
-
-APIHelper integration tests require APIHelper to be installed and the `SESSION_HELPER_APIHELPER` scripting define symbol to be enabled.

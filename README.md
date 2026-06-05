@@ -54,7 +54,6 @@ The package requires Unity `2021.3` or newer and depends on `com.unity.modules.j
 - `ISessionRefreshService`: backend refresh adapter.
 - `SessionRefreshFailurePolicy`: preserve or clear the current session after failed refresh.
 - `SessionResult` and `SessionError`: operation result and failure details.
-- `SessionAuthProvider`: optional APIHelper adapter in the `SessionHelper.APIHelper` assembly.
 
 Standalone workflow:
 
@@ -118,7 +117,7 @@ if (sessionService.IsAccessTokenExpiringSoon)
 
 ## Samples
 
-The package contains two sample entries.
+The package contains one sample entry.
 
 `Basic Session Usage`:
 
@@ -128,46 +127,17 @@ The package contains two sample entries.
 
 Open the scene and enter Play Mode. The sample uses IMGUI buttons for fake login, restore, refresh, logout, and clearing the persisted sample store.
 
-`APIHelper Integration`:
-
-- Path: `Samples~/APIHelperIntegration`
-- Script: `ApiHelperSessionAdapterSample`
-
-This sample shows how to configure APIHelper with a Session Helper-backed auth provider. It compiles only when APIHelper is installed and `SESSION_HELPER_APIHELPER` is enabled.
-
 ## Integrations
 
-Session Helper has one optional integration: APIHelper authentication.
+Session Helper core is standalone and does not include APIHelper assemblies or define-gated bridge code.
 
-The integration assembly is `SessionHelper.APIHelper`. It references `SessionHelper` and `APIHelper`, and has this define constraint:
+APIHelper integration lives in a separate bridge package:
 
 ```text
-SESSION_HELPER_APIHELPER
+com.jorishoef.session-helper.api-helper
 ```
 
-Enable the integration by:
-
-1. Installing APIHelper in the same Unity project.
-2. Adding `SESSION_HELPER_APIHELPER` to scripting define symbols.
-3. Referencing `SessionHelper.APIHelper` from your own asmdef if your code uses asmdefs.
-
-Usage:
-
-```csharp
-using JorisHoef.APIHelper.Configuration;
-using JorisHoef.APIHelper.Core;
-using JorisHoef.SessionHelper;
-using JorisHoef.SessionHelper.APIHelper;
-
-ISessionService sessionService = new SessionService(
-    new PlayerPrefsSessionStore("my-game.session"),
-    new MyRefreshService());
-
-var authProvider = new SessionAuthProvider(sessionService);
-IApiClient apiClient = ApiClientFactory.Create(apiClientConfig, authProvider);
-```
-
-`SessionAuthProvider` returns `null` when there is no authenticated session. By default, it tries to refresh when the current access token is expired or expiring soon.
+Install that package when a Unity project needs to pass Session Helper tokens to APIHelper. No `SESSION_HELPER_APIHELPER` define symbol is needed.
 
 ## Versioning
 
@@ -186,4 +156,4 @@ Use branch refs for active development and stable release tags when tags are ava
 - `PlayerPrefsSessionStore` is convenient but not secure token storage. Use a custom `ISessionStore` for stronger protection.
 - The package does not run an automatic background refresh loop.
 - The package does not include runtime UI beyond samples.
-- APIHelper integration is optional and compile-gated; the base `SessionHelper` assembly remains standalone.
+- APIHelper integration is not part of this package. Use `com.jorishoef.session-helper.api-helper` for the bridge.

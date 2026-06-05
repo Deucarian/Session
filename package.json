@@ -23,11 +23,6 @@
       "displayName": "Basic Session Usage",
       "description": "Minimal fake login, restore, refresh, logout, and store clearing scene using standalone SessionHelper APIs.",
       "path": "Samples~/BasicUsage"
-    },
-    {
-      "displayName": "APIHelper Integration",
-      "description": "Minimal code sample showing how to pass SessionHelper tokens to APIHelper through IApiAuthProvider.",
-      "path": "Samples~/APIHelperIntegration"
     }
   ]
 }
