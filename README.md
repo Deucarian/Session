@@ -1,8 +1,8 @@
-# Session Helper
+# JorisHoef Session Helper
 
 ## Overview
 
-Session Helper is a standalone Unity UPM package for authenticated session lifecycle management.
+JorisHoef Session Helper is a standalone Unity UPM package for authenticated session lifecycle management.
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
