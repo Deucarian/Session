@@ -2,8 +2,8 @@
 
 ## Unreleased
 
-- Improved README structure and clarified public APIs, samples, APIHelper integration, versioning, and limitations.
-- Moved APIHelper integration to the separate `com.jorishoef.session-helper.api-helper` bridge package.
+- Improved README structure and clarified public APIs, samples, APIHelper bridge support, versioning, and limitations.
+- Moved APIHelper support to the separate `com.jorishoef.session-helper.api-helper-bridge` bridge package.
 
 ## 1.0.0
 

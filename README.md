@@ -127,17 +127,17 @@ The package contains one sample entry.
 
 Open the scene and enter Play Mode. The sample uses IMGUI buttons for fake login, restore, refresh, logout, and clearing the persisted sample store.
 
-## Integrations
+## Bridge Packages
 
-Session Helper core is standalone and does not include APIHelper assemblies or define-gated bridge code.
+Session Helper core is standalone and does not include APIHelper assemblies or bridge code.
 
-APIHelper integration lives in a separate bridge package:
+APIHelper support lives in a separate bridge package:
 
 ```text
-com.jorishoef.session-helper.api-helper
+com.jorishoef.session-helper.api-helper-bridge
 ```
 
-Install that package when a Unity project needs to pass Session Helper tokens to APIHelper. No `SESSION_HELPER_APIHELPER` define symbol is needed.
+Install that package when a Unity project needs to pass Session Helper tokens to APIHelper. No scripting define symbol is needed.
 
 ## Versioning
 
@@ -156,4 +156,4 @@ Use branch refs for active development and stable release tags when tags are ava
 - `PlayerPrefsSessionStore` is convenient but not secure token storage. Use a custom `ISessionStore` for stronger protection.
 - The package does not run an automatic background refresh loop.
 - The package does not include runtime UI beyond samples.
-- APIHelper integration is not part of this package. Use `com.jorishoef.session-helper.api-helper` for the bridge.
+- APIHelper bridge code is not part of this package. Use `com.jorishoef.session-helper.api-helper-bridge` for that adapter.
