@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0
+## 1.0.0
 
 - Initial package scaffold.
 - Added session state, result, error, store, login, refresh, and service APIs.

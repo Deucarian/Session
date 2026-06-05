@@ -1,6 +1,6 @@
 {
   "name": "com.jorishoef.session-helper",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "displayName": "Session Helper",
   "description": "A standalone Unity package for storing, restoring, refreshing, and observing authenticated session state.",
   "unity": "2021.3",
