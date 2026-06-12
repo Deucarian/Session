@@ -1,4 +1,4 @@
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Determines how <see cref="SessionService"/> handles a failed refresh attempt.

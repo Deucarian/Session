@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Authenticates a backend-specific login request and maps the response into session data.

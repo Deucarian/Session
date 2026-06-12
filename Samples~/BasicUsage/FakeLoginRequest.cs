@@ -1,7 +1,7 @@
-namespace JorisHoef.SessionHelper.Samples
+namespace Deucarian.Session.Samples
 {
     /// <summary>
-    /// Minimal fake login request for the Session Helper sample.
+    /// Minimal fake login request for the Session sample.
     /// </summary>
     public sealed class FakeLoginRequest
     {

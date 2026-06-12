@@ -3,14 +3,14 @@ using System.Globalization;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace JorisHoef.SessionHelper.Samples
+namespace Deucarian.Session.Samples
 {
     /// <summary>
     /// Minimal MonoBehaviour sample for restore, fake login, refresh, logout, and store clearing.
     /// </summary>
-    public sealed class SessionHelperSampleController : MonoBehaviour
+    public sealed class SessionSampleController : MonoBehaviour
     {
-        private const string SampleStoreKey = "session-helper.sample";
+        private const string SampleStoreKey = "deucarian.session.sample";
 
         private ISessionStore sessionStore;
         private ISessionService sessionService;
@@ -46,7 +46,7 @@ namespace JorisHoef.SessionHelper.Samples
             EnsureStyles();
 
             GUILayout.BeginArea(new Rect(20f, 20f, 620f, 360f), boxStyle);
-            GUILayout.Label("SessionHelper Basic Usage", titleStyle);
+            GUILayout.Label("Deucarian Session Basic Usage", titleStyle);
             GUILayout.Space(8f);
 
             bool previousGuiEnabled = GUI.enabled;

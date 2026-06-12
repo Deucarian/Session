@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JorisHoef.SessionHelper.Samples
+namespace Deucarian.Session.Samples
 {
     /// <summary>
     /// Fake login service that creates session data without contacting a backend.

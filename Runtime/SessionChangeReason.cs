@@ -1,4 +1,4 @@
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Identifies the operation that caused the session to change.

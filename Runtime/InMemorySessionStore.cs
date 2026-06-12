@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Stores session data in memory for tests, tools, and temporary sessions.

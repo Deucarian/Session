@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Coordinates session state, persistence, login, logout, restore, and refresh operations.

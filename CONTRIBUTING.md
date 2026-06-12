@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve Session Helper.
+Thanks for helping improve Session.
 
 ## Development Guidelines
 
@@ -10,7 +10,7 @@ Thanks for helping improve Session Helper.
 - Keep persistence, login, and refresh behavior behind interfaces.
 - Add XML documentation for public runtime APIs.
 - Add editor tests for behavior changes.
-- Keep APIHelper integration in the separate `com.jorishoef.session-helper.api-helper` bridge package.
+- Keep API integration in the separate `com.deucarian.session.api-bridge` bridge package.
 
 ## Testing
 

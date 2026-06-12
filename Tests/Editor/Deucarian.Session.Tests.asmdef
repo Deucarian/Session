@@ -1,0 +1,21 @@
+{
+  "name": "Deucarian.Session.Tests",
+  "rootNamespace": "Deucarian.Session.Tests",
+  "references": [
+    "Deucarian.Session"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

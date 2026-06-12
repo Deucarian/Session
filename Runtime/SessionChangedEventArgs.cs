@@ -1,6 +1,6 @@
 using System;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Provides details for <see cref="ISessionService.SessionChanged"/>.

@@ -1,12 +1,12 @@
-# JorisHoef Session Helper
+# Deucarian Session
 
 ## Overview
 
-JorisHoef Session Helper is a standalone Unity UPM package for authenticated session lifecycle management.
+Deucarian Session is a standalone Unity UPM package for authenticated session lifecycle management.
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-Package ID: `com.jorishoef.session-helper`
+Package ID: `com.deucarian.session`
 
 ## Installation
 
@@ -15,7 +15,7 @@ Install the package through Unity Package Manager with a Git URL:
 ```json
 {
   "dependencies": {
-    "com.jorishoef.session-helper": "https://github.com/JorisHoef/Session-Helper.git#main"
+    "com.deucarian.session": "https://github.com/Deucarian/Session.git#main"
   }
 }
 ```
@@ -23,7 +23,7 @@ Install the package through Unity Package Manager with a Git URL:
 For development builds, use:
 
 ```json
-"com.jorishoef.session-helper": "https://github.com/JorisHoef/Session-Helper.git#develop"
+"com.deucarian.session": "https://github.com/Deucarian/Session.git#develop"
 ```
 
 The package requires Unity `2021.3` or newer and depends on `com.unity.modules.jsonserialize`.
@@ -36,7 +36,7 @@ The package requires Unity `2021.3` or newer and depends on `com.unity.modules.j
 
 `ISessionStore` abstracts persistence. The package includes `InMemorySessionStore` and `PlayerPrefsSessionStore`.
 
-`ISessionLoginService<TLoginRequest>` and `ISessionRefreshService` are application-specific backend adapters. Session Helper does not assume one login request shape or backend response shape.
+`ISessionLoginService<TLoginRequest>` and `ISessionRefreshService` are application-specific backend adapters. Session does not assume one login request shape or backend response shape.
 
 `SessionResult` wraps successful session operations or a `SessionError` with a stable code, message, and optional exception.
 
@@ -61,7 +61,7 @@ Standalone workflow:
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JorisHoef.SessionHelper;
+using Deucarian.Session;
 
 public sealed class LoginRequest
 {
@@ -115,6 +115,26 @@ if (sessionService.IsAccessTokenExpiringSoon)
 }
 ```
 
+`IsAuthenticated` is true only when an access token exists and is not expired. A session without an expiry time is treated as authenticated until it is explicitly cleared or replaced.
+
+## Refresh Failure Policy
+
+`SessionRefreshFailurePolicy.PreserveSession` keeps the current session if refresh fails. This is useful when the current token may still be accepted.
+
+`SessionRefreshFailurePolicy.ClearSession` clears the store and in-memory state if refresh fails. This is useful when a failed refresh means the user must authenticate again.
+
+## Storage
+
+Use `InMemorySessionStore` for tests, tools, or sessions that should disappear when the app closes.
+
+Use `PlayerPrefsSessionStore` for simple local persistence:
+
+```csharp
+var store = new PlayerPrefsSessionStore("com.example.game.session");
+```
+
+For production apps, consider implementing `ISessionStore` with platform-secure storage if tokens need stronger protection than PlayerPrefs.
+
 ## Samples
 
 The package contains one sample entry.
@@ -123,21 +143,21 @@ The package contains one sample entry.
 
 - Path: `Samples~/BasicUsage`
 - Scene: `BasicUsage.unity`
-- Scripts: `SessionHelperSampleController`, `FakeSessionLoginService`, `FakeSessionRefreshService`, and `FakeLoginRequest`
+- Scripts: `SessionSampleController`, `FakeSessionLoginService`, `FakeSessionRefreshService`, and `FakeLoginRequest`
 
 Open the scene and enter Play Mode. The sample uses IMGUI buttons for fake login, restore, refresh, logout, and clearing the persisted sample store.
 
 ## Bridge Packages
 
-Session Helper core is standalone and does not include APIHelper assemblies or bridge code.
+Session core is standalone and does not include API assemblies or bridge code.
 
-APIHelper support lives in a separate bridge package:
+API support lives in a separate bridge package:
 
 ```text
-com.jorishoef.session-helper.api-helper-bridge
+com.deucarian.session.api-bridge
 ```
 
-Install that package when a Unity project needs to pass Session Helper tokens to APIHelper. No scripting define symbol is needed.
+Install that package when a Unity project needs to pass Session tokens to API. No scripting define symbol is needed in this core package.
 
 ## Versioning
 
@@ -152,8 +172,8 @@ Use branch refs for active development and stable release tags when tags are ava
 
 ## Limitations
 
-- Session Helper does not include backend HTTP calls. Implement login and refresh services for your backend.
+- Session does not include backend HTTP calls. Implement login and refresh services for your backend.
 - `PlayerPrefsSessionStore` is convenient but not secure token storage. Use a custom `ISessionStore` for stronger protection.
 - The package does not run an automatic background refresh loop.
 - The package does not include runtime UI beyond samples.
-- APIHelper bridge code is not part of this package. Use `com.jorishoef.session-helper.api-helper-bridge` for that adapter.
+- API bridge code is not part of this package. Use `com.deucarian.session.api-bridge` for that adapter.
