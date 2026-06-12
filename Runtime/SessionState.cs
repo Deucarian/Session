@@ -1,4 +1,4 @@
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Describes the authentication state represented by the current session data.

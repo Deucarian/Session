@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve Session Helper.
+Thanks for helping improve Session.
 
 ## Development Guidelines
 
@@ -15,4 +15,4 @@ Thanks for helping improve Session Helper.
 
 Run the package editor tests from Unity's Test Runner.
 
-APIHelper integration tests require APIHelper to be installed and the `SESSION_HELPER_APIHELPER` scripting define symbol to be enabled.
+API integration tests require API to be installed and the `DEUCARIAN_SESSION_API` scripting define symbol to be enabled.

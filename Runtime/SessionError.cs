@@ -1,6 +1,6 @@
 using System;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Describes why a session operation failed.

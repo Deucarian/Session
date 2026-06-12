@@ -1,8 +1,8 @@
-# Session Helper
+# Session
 
-Session Helper is a standalone Unity UPM package for session lifecycle management. It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when the session changes.
+Session is a standalone Unity UPM package for session lifecycle management. It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when the session changes.
 
-Package name: `com.jorishoef.session-helper`
+Package name: `com.deucarian.session`
 
 ## What It Provides
 
@@ -13,7 +13,7 @@ Package name: `com.jorishoef.session-helper`
 - `SessionData` with access token, optional refresh token, and optional expiry time.
 - `InMemorySessionStore` for tests and temporary sessions.
 - `PlayerPrefsSessionStore` for simple local persistence.
-- Optional `SessionAuthProvider` adapter for APIHelper's `IApiAuthProvider`.
+- Optional `SessionAuthProvider` adapter for API's `IApiAuthProvider`.
 
 The package does not include UI, does not require a Unity scene, and does not assume one backend response shape.
 
@@ -25,7 +25,7 @@ Create your backend-specific login service by implementing `ISessionLoginService
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JorisHoef.SessionHelper;
+using Deucarian.Session;
 
 public sealed class LoginRequest
 {
@@ -98,22 +98,22 @@ var store = new PlayerPrefsSessionStore("com.example.game.session");
 
 For production apps, consider implementing `ISessionStore` with platform-secure storage if tokens need stronger protection than PlayerPrefs.
 
-## APIHelper Integration
+## API Integration
 
-Session Helper can integrate with APIHelper without modifying APIHelper. The optional adapter implements APIHelper's `IApiAuthProvider` and returns the current Session Helper access token. APIHelper adds the `Authorization: Bearer` header itself.
+Session can integrate with API without modifying API. The optional adapter implements API's `IApiAuthProvider` and returns the current Session access token. API adds the `Authorization: Bearer` header itself.
 
-Because Session Helper must remain standalone, the APIHelper adapter is compiled only when you opt in:
+Because Session must remain standalone, the API adapter is compiled only when you opt in:
 
-1. Install APIHelper in the same Unity project.
-2. Add `SESSION_HELPER_APIHELPER` to the project's scripting define symbols.
-3. Reference `SessionHelper.APIHelper` from your own asmdef if your code uses asmdefs.
+1. Install API in the same Unity project.
+2. Add `DEUCARIAN_SESSION_API` to the project's scripting define symbols.
+3. Reference `Deucarian.Session.API` from your own asmdef if your code uses asmdefs.
 
 Example:
 
 ```csharp
-using JorisHoef.APIHelper.Services;
-using JorisHoef.SessionHelper;
-using JorisHoef.SessionHelper.APIHelper;
+using Deucarian.API.Services;
+using Deucarian.Session;
+using Deucarian.Session.API;
 
 ISessionService sessionService = new SessionService(
     new PlayerPrefsSessionStore("my-game.session"),
@@ -123,16 +123,16 @@ var authProvider = new SessionAuthProvider(sessionService);
 ApiServices.Configure(config, authProvider);
 ```
 
-The adapter returns `null` when the session is unauthenticated or expired and cannot be refreshed, so APIHelper will omit the bearer token.
+The adapter returns `null` when the session is unauthenticated or expired and cannot be refreshed, so API will omit the bearer token.
 
 ## Samples
 
 The `Basic Session Usage` sample contains fake login, refresh, restore, and logout scripts that can be dropped into any scene or called from code.
 
-The `APIHelper Integration` sample is gated by `SESSION_HELPER_APIHELPER` and demonstrates constructing the adapter for APIHelper.
+The `API Integration` sample is gated by `DEUCARIAN_SESSION_API` and demonstrates constructing the adapter for API.
 
 ## Tests
 
-Editor tests cover login, logout, restore, expiry detection, refresh, refresh failure policy, session change events, and APIHelper adapter behavior.
+Editor tests cover login, logout, restore, expiry detection, refresh, refresh failure policy, session change events, and API adapter behavior.
 
-APIHelper adapter tests are also gated by `SESSION_HELPER_APIHELPER` because they intentionally compile against APIHelper's `IApiAuthProvider`.
+API adapter tests are also gated by `DEUCARIAN_SESSION_API` because they intentionally compile against API's `IApiAuthProvider`.

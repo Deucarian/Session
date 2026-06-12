@@ -1,0 +1,25 @@
+{
+  "name": "Deucarian.Session.API.Tests",
+  "rootNamespace": "Deucarian.Session.API.Tests",
+  "references": [
+    "Deucarian.Session",
+    "Deucarian.Session.API",
+    "Deucarian.API"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "DEUCARIAN_SESSION_API"
+  ],
+  "versionDefines": [],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "noEngineReferences": false
+}

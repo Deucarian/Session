@@ -1,0 +1,16 @@
+{
+  "name": "Deucarian.Session.Samples",
+  "rootNamespace": "Deucarian.Session.Samples",
+  "references": [
+    "Deucarian.Session"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

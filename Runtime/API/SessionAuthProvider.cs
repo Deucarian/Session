@@ -1,11 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
-using JorisHoef.APIHelper.Authentication;
+using Deucarian.API.Authentication;
 
-namespace JorisHoef.SessionHelper.APIHelper
+namespace Deucarian.Session.API
 {
     /// <summary>
-    /// Exposes the current Session Helper access token through APIHelper's <see cref="IApiAuthProvider"/> interface.
+    /// Exposes the current Session access token through API's <see cref="IApiAuthProvider"/> interface.
     /// </summary>
     public sealed class SessionAuthProvider : IApiAuthProvider
     {
@@ -13,7 +13,7 @@ namespace JorisHoef.SessionHelper.APIHelper
         private readonly bool refreshIfExpiredOrExpiringSoon;
 
         /// <summary>
-        /// Creates an APIHelper auth provider backed by a session service.
+        /// Creates an API auth provider backed by a session service.
         /// </summary>
         /// <param name="sessionService">Session service that owns the current token.</param>
         /// <param name="refreshIfExpiredOrExpiringSoon">Whether to attempt refresh before returning an expired or soon-expiring token.</param>

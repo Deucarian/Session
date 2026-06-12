@@ -1,6 +1,6 @@
 using System;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Represents the token data for the current authenticated session.

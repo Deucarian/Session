@@ -1,0 +1,20 @@
+{
+  "name": "Deucarian.Session.API.Samples",
+  "rootNamespace": "Deucarian.Session.API.Samples",
+  "references": [
+    "Deucarian.Session",
+    "Deucarian.Session.API",
+    "Deucarian.API"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "DEUCARIAN_SESSION_API"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

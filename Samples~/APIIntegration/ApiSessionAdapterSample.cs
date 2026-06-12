@@ -1,17 +1,17 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JorisHoef.APIHelper.Configuration;
-using JorisHoef.APIHelper.Services;
-using JorisHoef.SessionHelper.APIHelper;
+using Deucarian.API.Configuration;
+using Deucarian.API.Services;
+using Deucarian.Session.API;
 using UnityEngine;
 
-namespace JorisHoef.SessionHelper.APIHelper.Samples
+namespace Deucarian.Session.API.Samples
 {
     /// <summary>
-    /// Minimal sample showing how to configure APIHelper with a Session Helper auth provider.
+    /// Minimal sample showing how to configure API with a Session auth provider.
     /// </summary>
-    public sealed class ApiHelperSessionAdapterSample : MonoBehaviour
+    public sealed class ApiSessionAdapterSample : MonoBehaviour
     {
         [SerializeField] private ApiClientConfig apiClientConfig;
 
@@ -20,14 +20,14 @@ namespace JorisHoef.SessionHelper.APIHelper.Samples
         private void Awake()
         {
             sessionService = new SessionService(
-                new PlayerPrefsSessionStore("session-helper.apihelper.sample"),
-                new ApiHelperSampleRefreshService());
+                new PlayerPrefsSessionStore("session.apihelper.sample"),
+                new ApiSampleRefreshService());
 
             var authProvider = new SessionAuthProvider(sessionService);
             ApiServices.Configure(apiClientConfig, authProvider);
         }
 
-        private sealed class ApiHelperSampleRefreshService : ISessionRefreshService
+        private sealed class ApiSampleRefreshService : ISessionRefreshService
         {
             public Task<SessionResult> RefreshAsync(
                 SessionData currentSession,

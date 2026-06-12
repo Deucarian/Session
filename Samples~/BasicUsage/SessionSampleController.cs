@@ -2,12 +2,12 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace JorisHoef.SessionHelper.Samples
+namespace Deucarian.Session.Samples
 {
     /// <summary>
     /// Minimal MonoBehaviour sample for restore, fake login, refresh, and logout.
     /// </summary>
-    public sealed class SessionHelperSampleController : MonoBehaviour
+    public sealed class SessionSampleController : MonoBehaviour
     {
         private ISessionService sessionService;
         private FakeSessionLoginService loginService;
@@ -15,7 +15,7 @@ namespace JorisHoef.SessionHelper.Samples
         private void Awake()
         {
             sessionService = new SessionService(
-                new PlayerPrefsSessionStore("session-helper.sample"),
+                new PlayerPrefsSessionStore("session.sample"),
                 new FakeSessionRefreshService(),
                 TimeSpan.FromMinutes(2),
                 SessionRefreshFailurePolicy.PreserveSession);

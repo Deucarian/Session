@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace JorisHoef.SessionHelper
+namespace Deucarian.Session
 {
     /// <summary>
     /// Stores session data in Unity PlayerPrefs.
@@ -17,7 +17,7 @@ namespace JorisHoef.SessionHelper
         /// <summary>
         /// Default PlayerPrefs key used when no key is supplied.
         /// </summary>
-        public const string DefaultKey = "com.jorishoef.session-helper.session";
+        public const string DefaultKey = "com.deucarian.session.session";
 
         private readonly string key;
         private readonly bool saveImmediately;

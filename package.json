@@ -1,11 +1,11 @@
 {
-  "name": "com.jorishoef.session-helper",
+  "name": "com.deucarian.session",
   "version": "0.1.0",
-  "displayName": "Session Helper",
+  "displayName": "Deucarian Session",
   "description": "A standalone Unity package for storing, restoring, refreshing, and observing authenticated session state.",
   "unity": "2021.3",
   "author": {
-    "name": "Joris Hoef"
+    "name": "Deucarian"
   },
   "dependencies": {
     "com.unity.modules.jsonserialize": "1.0.0"
@@ -25,9 +25,9 @@
       "path": "Samples~/BasicUsage"
     },
     {
-      "displayName": "APIHelper Integration",
-      "description": "Minimal code sample showing how to pass SessionHelper tokens to APIHelper through IApiAuthProvider.",
-      "path": "Samples~/APIHelperIntegration"
+      "displayName": "API Integration",
+      "description": "Minimal code sample showing how to pass Session tokens to API through IApiAuthProvider.",
+      "path": "Samples~/APIIntegration"
     }
   ]
 }
