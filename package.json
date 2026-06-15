@@ -1,6 +1,6 @@
 {
   "name": "com.deucarian.session",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Deucarian Session",
   "description": "A standalone Unity package for storing, restoring, refreshing, and observing authenticated session state.",
   "unity": "2021.3",
@@ -8,6 +8,7 @@
     "name": "Deucarian"
   },
   "dependencies": {
+    "com.deucarian.logging": "0.2.2",
     "com.unity.modules.jsonserialize": "1.0.0"
   },
   "keywords": [

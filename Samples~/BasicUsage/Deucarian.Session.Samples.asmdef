@@ -2,7 +2,8 @@
   "name": "Deucarian.Session.Samples",
   "rootNamespace": "Deucarian.Session.Samples",
   "references": [
-    "Deucarian.Session"
+    "Deucarian.Session",
+    "Deucarian.Logging"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
