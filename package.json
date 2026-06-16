@@ -7,6 +7,10 @@
   "author": {
     "name": "Deucarian"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deucarian/Session.git"
+  },
   "dependencies": {
     "com.deucarian.logging": "0.2.2",
     "com.unity.modules.jsonserialize": "1.0.0"
