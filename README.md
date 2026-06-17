@@ -26,7 +26,13 @@ For development builds, use:
 "com.deucarian.session": "https://github.com/Deucarian/Session.git#develop"
 ```
 
-The package requires Unity `2021.3` or newer and depends on `com.unity.modules.jsonserialize`.
+The package requires Unity `2021.3` or newer and depends on `com.deucarian.logging` and `com.unity.modules.jsonserialize`.
+
+## Logging
+
+This package uses `com.deucarian.logging`.
+
+Deucarian Session diagnostics use stable package categories: `Session`, `Session.Authentication`, `Session.Storage`, and `Session.Samples`. Configure Deucarian Logging filters by category and level to isolate authentication, persistence, or sample output. Entries flow through the shared ring buffer for recent-diagnostic inspection and remain compatible with future telemetry sinks.
 
 ## Core Concepts
 
@@ -99,7 +105,7 @@ var sessionService = new SessionService(
 
 sessionService.SessionChanged += (sender, args) =>
 {
-    UnityEngine.Debug.Log(args.Reason + ": " + args.PreviousState + " -> " + args.CurrentState);
+    SessionLog.General.Info(args.Reason + ": " + args.PreviousState + " -> " + args.CurrentState);
 };
 
 await sessionService.RestoreAsync();
@@ -161,7 +167,7 @@ Install that package when a Unity project needs to pass Session tokens to API. N
 
 ## Versioning
 
-Current package version: `1.0.0`.
+Current package version: `1.0.1`.
 
 Branch strategy:
 

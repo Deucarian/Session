@@ -153,7 +153,7 @@ namespace Deucarian.Session.Samples
                 args.PreviousState,
                 args.CurrentState);
 
-            Debug.Log("Session changed: " + lastEventText);
+            SessionLog.Samples.Info("Session changed: " + lastEventText);
         }
 
         private async Task<SessionResult> LoginCoreAsync()
@@ -195,17 +195,17 @@ namespace Deucarian.Session.Samples
 
                 if (result.Succeeded)
                 {
-                    Debug.Log(operationName + " succeeded. State: " + sessionService.State);
+                    SessionLog.Samples.Info(operationName + " succeeded. State: " + sessionService.State);
                 }
                 else
                 {
-                    Debug.LogWarning(operationName + " failed: " + result.Error.Message);
+                    SessionLog.Samples.Warning(operationName + " failed: " + result.Error.Message);
                 }
             }
             catch (Exception exception)
             {
                 lastResultText = operationName + " failed: " + exception.Message;
-                Debug.LogWarning(operationName + " failed: " + exception.Message);
+                SessionLog.Samples.Warning(operationName + " failed: " + exception.Message);
             }
             finally
             {

@@ -1,7 +1,9 @@
 {
   "name": "Deucarian.Session",
   "rootNamespace": "Deucarian.Session",
-  "references": [],
+  "references": [
+    "Deucarian.Logging"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

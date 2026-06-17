@@ -5,6 +5,11 @@
 - Improved README structure and clarified public APIs, samples, API bridge support, versioning, and limitations.
 - Moved API support to the separate `com.deucarian.session.api-bridge` bridge package.
 
+## 1.0.1 - 2026-06-15
+
+- Standardized package logging on com.deucarian.logging.
+- Added `SessionLog` package categories for session, authentication, storage, and sample diagnostics.
+
 ## 1.0.0
 
 - Initial package scaffold.
