@@ -10,7 +10,7 @@ Thanks for helping improve Session.
 - Keep persistence, login, and refresh behavior behind interfaces.
 - Add XML documentation for public runtime APIs.
 - Add editor tests for behavior changes.
-- Keep API integration in the separate `com.deucarian.session.api-bridge` bridge package.
+- Keep API integration in the separate `com.deucarian.session.api-integration` integration package.
 
 ## Testing
 

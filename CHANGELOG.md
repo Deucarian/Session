@@ -1,9 +1,13 @@
 # Changelog
 
+## 1.0.2 - 2026-06-17
+
+- Renamed package ecosystem references from API bridge to API integration.
+
 ## Unreleased
 
-- Improved README structure and clarified public APIs, samples, API bridge support, versioning, and limitations.
-- Moved API support to the separate `com.deucarian.session.api-bridge` bridge package.
+- Improved README structure and clarified public APIs, samples, API integration support, versioning, and limitations.
+- Moved API support to the separate `com.deucarian.session.api-integration` integration package.
 
 ## 1.0.1 - 2026-06-15
 

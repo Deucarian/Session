@@ -153,21 +153,21 @@ The package contains one sample entry.
 
 Open the scene and enter Play Mode. The sample uses IMGUI buttons for fake login, restore, refresh, logout, and clearing the persisted sample store.
 
-## Bridge Packages
+## Integration Packages
 
-Session core is standalone and does not include API assemblies or bridge code.
+Session core is standalone and does not include API assemblies or integration code.
 
-API support lives in a separate bridge package:
+API support lives in a separate integration package:
 
 ```text
-com.deucarian.session.api-bridge
+com.deucarian.session.api-integration
 ```
 
 Install that package when a Unity project needs to pass Session tokens to API. No scripting define symbol is needed in this core package.
 
 ## Versioning
 
-Current package version: `1.0.1`.
+Current package version: `1.0.2`.
 
 Branch strategy:
 
@@ -182,4 +182,4 @@ Use branch refs for active development and stable release tags when tags are ava
 - `PlayerPrefsSessionStore` is convenient but not secure token storage. Use a custom `ISessionStore` for stronger protection.
 - The package does not run an automatic background refresh loop.
 - The package does not include runtime UI beyond samples.
-- API bridge code is not part of this package. Use `com.deucarian.session.api-bridge` for that adapter.
+- API integration code is not part of this package. Use `com.deucarian.session.api-integration` for that adapter.
