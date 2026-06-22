@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - 2026-06-22
+
+- Updated the exact `com.deucarian.logging` dependency to `1.0.1`.
+
 ## 1.0.3 - 2026-06-22
 
 - Accepted the public release automation state for `com.deucarian.session` 1.0.3 on develop.

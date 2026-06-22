@@ -1,6 +1,6 @@
 {
   "name": "com.deucarian.session",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "displayName": "Deucarian Session",
   "description": "A standalone Unity package for storing, restoring, refreshing, and observing authenticated session state.",
   "unity": "2021.3",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/Deucarian/Session.git"
   },
   "dependencies": {
-    "com.deucarian.logging": "0.2.5",
+    "com.deucarian.logging": "1.0.1",
     "com.unity.modules.jsonserialize": "1.0.0"
   },
   "keywords": [
