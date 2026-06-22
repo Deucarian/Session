@@ -183,3 +183,9 @@ Use branch refs for active development and stable release tags when tags are ava
 - The package does not run an automatic background refresh loop.
 - The package does not include runtime UI beyond samples.
 - API integration code is not part of this package. Use `com.deucarian.session.api-integration` for that adapter.
+
+## Architecture / Contributor Notes
+
+- [AGENTS.md](AGENTS.md) contains repository-specific ownership and Codex guidance.
+- Deucarian architecture rules live in [Package Registry](https://github.com/Deucarian/Package-Registry/blob/develop/ARCHITECTURE.md).
+- Capability ownership is tracked in [CAPABILITY_OWNERSHIP.md](https://github.com/Deucarian/Package-Registry/blob/develop/CAPABILITY_OWNERSHIP.md).
