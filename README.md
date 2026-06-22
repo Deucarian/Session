@@ -167,7 +167,7 @@ Install that package when a Unity project needs to pass Session tokens to API. N
 
 ## Versioning
 
-Current package version: `1.0.2`.
+Current package version: `1.0.3`.
 
 Branch strategy:
 
