@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3 - 2026-06-22
+
+- Accepted the public release automation state for `com.deucarian.session` 1.0.3 on develop.
+
 ## 1.0.2 - 2026-06-17
 
 - Renamed package ecosystem references from API bridge to API integration.
