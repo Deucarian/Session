@@ -1,0 +1,25 @@
+{
+  "packageId": "com.deucarian.session",
+  "displayName": "Deucarian Session",
+  "ownedCapabilities": [
+    "session"
+  ],
+  "runtimeAssemblies": [
+    "Deucarian.Session"
+  ],
+  "editorAssemblies": [],
+  "sampleAssemblies": [
+    "Deucarian.Session.Samples"
+  ],
+  "testAssemblies": [
+    "Deucarian.Session.Tests"
+  ],
+  "requiredDependencies": [
+    "com.deucarian.logging",
+    "com.unity.modules.jsonserialize"
+  ],
+  "optionalVersionDefinedDependencies": [],
+  "allowedDirectDebugCalls": [],
+  "allowedDirectUnityObjectLifetimeCalls": [],
+  "expectedSamplesRoot": "Samples~"
+}
