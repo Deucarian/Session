@@ -1,32 +1,48 @@
 # Deucarian Session
 
-## Overview
+## What this is
 
-Deucarian Session is a standalone Unity UPM package for authenticated session lifecycle management.
+`com.deucarian.session` is a standalone Unity UPM package for authenticated session lifecycle management.
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-Package ID: `com.deucarian.session`
+Current package version: `1.0.4`.
 
-## Installation
+## When to use it
 
-Install the package through Unity Package Manager with a Git URL:
+- You need a reusable authenticated-session state model.
+- You need restore, login, refresh, logout, persistence, and change notification contracts.
+- You want backend-specific login/refresh adapters without coupling Session to an HTTP implementation.
+- You need a standalone session package that can later compose with API through an integration package.
+
+## When not to use it
+
+- Do not use Session as an HTTP/API client; `com.deucarian.api` owns transport.
+- Do not put UI navigation, object loading, telemetry, or package installation behavior here.
+- Do not add API integration code to this core package; use `com.deucarian.session.api-integration`.
+
+## Install
+
+Stable:
 
 ```json
-{
-  "dependencies": {
-    "com.deucarian.session": "https://github.com/Deucarian/Session.git#main"
-  }
-}
+"com.deucarian.session": "https://github.com/Deucarian/Session.git#main"
 ```
 
-For development builds, use:
+Development:
 
 ```json
 "com.deucarian.session": "https://github.com/Deucarian/Session.git#develop"
 ```
 
-The package requires Unity `2021.3` or newer and depends on `com.deucarian.logging` and `com.unity.modules.jsonserialize`.
+Dependencies:
+
+- `com.deucarian.logging`: package logging facade and diagnostics output.
+- `com.unity.modules.jsonserialize`: Unity JSON serialization module used by this package.
+
+## Unity compatibility
+
+Requires Unity 2021.3 or newer.
 
 ## Logging
 
@@ -34,7 +50,7 @@ This package uses `com.deucarian.logging`.
 
 Deucarian Session diagnostics use stable package categories: `Session`, `Session.Authentication`, `Session.Storage`, and `Session.Samples`. Configure Deucarian Logging filters by category and level to isolate authentication, persistence, or sample output. Entries flow through the shared ring buffer for recent-diagnostic inspection and remain compatible with future telemetry sinks.
 
-## Core Concepts
+## 60-second quick start
 
 `SessionService` coordinates restore, login, refresh, logout, state calculation, persistence, and change events.
 
@@ -46,7 +62,7 @@ Deucarian Session diagnostics use stable package categories: `Session`, `Session
 
 `SessionResult` wraps successful session operations or a `SessionError` with a stable code, message, and optional exception.
 
-## Public API
+## Public API map
 
 - `ISessionService`: login, logout, restore, refresh, current session, state checks, and `SessionChanged`.
 - `SessionService`: default service implementation.
@@ -165,17 +181,6 @@ com.deucarian.session.api-integration
 
 Install that package when a Unity project needs to pass Session tokens to API. No scripting define symbol is needed in this core package.
 
-## Versioning
-
-Current package version: `1.0.4`.
-
-Branch strategy:
-
-- `main`: stable package branch.
-- `develop`: development package branch.
-
-Use branch refs for active development and stable release tags when tags are available.
-
 ## Limitations
 
 - Session does not include backend HTTP calls. Implement login and refresh services for your backend.
@@ -184,8 +189,34 @@ Use branch refs for active development and stable release tags when tags are ava
 - The package does not include runtime UI beyond samples.
 - API integration code is not part of this package. Use `com.deucarian.session.api-integration` for that adapter.
 
+## Troubleshooting
+
+- If `IsAuthenticated` is false, check whether the access token is missing or expired.
+- If refresh fails, confirm the selected `SessionRefreshFailurePolicy` matches the app's expected behavior.
+- If token storage needs platform security, implement `ISessionStore` instead of relying on PlayerPrefs.
+
+## Validation
+
+Run the shared package validator from the repository root:
+
+```powershell
+python C:/Repositories/Package-Registry/Tools/deucarian_package_validator.py --registry-root C:/Repositories/Package-Registry --repository-root . --config deucarian-package.json
+```
+
+Run the package's EditMode tests in Unity after code or assembly definition changes.
+
+Documentation-only updates should still pass:
+
+```powershell
+git diff --check
+```
+
 ## Architecture / Contributor Notes
 
 - [AGENTS.md](AGENTS.md) contains repository-specific ownership and Codex guidance.
 - Deucarian architecture rules live in [Package Registry](https://github.com/Deucarian/Package-Registry/blob/develop/ARCHITECTURE.md).
 - Capability ownership is tracked in [CAPABILITY_OWNERSHIP.md](https://github.com/Deucarian/Package-Registry/blob/develop/CAPABILITY_OWNERSHIP.md).
+
+## License
+
+See [LICENSE.md](LICENSE.md).
