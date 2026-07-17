@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5 - 2026-07-17
+
+- Documented the Basic Usage sample and aligned the exact Logging dependency for the portfolio release.
+
 ## 1.0.4 - 2026-06-22
 
 - Updated the exact `com.deucarian.logging` dependency to `1.0.1`.
