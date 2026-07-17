@@ -6,7 +6,7 @@
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-Current package version: `1.0.4`.
+Current package version: `1.0.5`.
 
 ## When to use it
 

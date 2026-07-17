@@ -1,6 +1,7 @@
 {
   "packageId": "com.deucarian.session",
   "displayName": "Deucarian Session",
+  "samplePolicy": "playable-scene",
   "ownedCapabilities": [
     "session"
   ],
