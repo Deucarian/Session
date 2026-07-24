@@ -16,9 +16,11 @@ namespace Deucarian.Session
         /// <exception cref="ArgumentException">Thrown when <paramref name="accessToken"/> is null, empty, or whitespace.</exception>
         public SessionData(string accessToken, string refreshToken = null, DateTimeOffset? expiresAtUtc = null)
         {
-            if (string.IsNullOrWhiteSpace(accessToken))
+            if (!IsValidAccessToken(accessToken))
             {
-                throw new ArgumentException("An access token is required.", nameof(accessToken));
+                throw new ArgumentException(
+                    "A valid access token is required.",
+                    nameof(accessToken));
             }
 
             AccessToken = accessToken;
@@ -47,6 +49,30 @@ namespace Deucarian.Session
         public bool HasRefreshToken
         {
             get { return !string.IsNullOrWhiteSpace(RefreshToken); }
+        }
+
+        /// <summary>
+        /// Returns whether a value has valid access-token syntax.
+        /// </summary>
+        /// <param name="accessToken">Candidate access token.</param>
+        /// <returns>True for a non-empty token without whitespace or control characters.</returns>
+        public static bool IsValidAccessToken(string accessToken)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < accessToken.Length; i++)
+            {
+                if (char.IsWhiteSpace(accessToken[i]) ||
+                    char.IsControl(accessToken[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

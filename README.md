@@ -6,7 +6,7 @@
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-Current package version: `1.0.5`.
+Current package version: `1.0.6`.
 
 ## When to use it
 
@@ -64,7 +64,7 @@ Deucarian Session diagnostics use stable package categories: `Session`, `Session
 
 ## Public API map
 
-- `ISessionService`: login, logout, restore, refresh, current session, state checks, and `SessionChanged`.
+- `ISessionService`: login, logout, restore, refresh, externally supplied access-token replacement, current session, state checks, and `SessionChanged`.
 - `SessionService`: default service implementation.
 - `SessionData`: access token, refresh token, expiry, and expiry helper methods.
 - `SessionState`: `Unauthenticated`, `Authenticated`, or `Expired`.
