@@ -108,6 +108,118 @@ namespace Deucarian.Session.Tests
             });
         }
 
+        [Test]
+        public void ReplaceAccessTokenPreservesRefreshTokenAndClearsUnknownExpiry()
+        {
+            RunAsync(async () =>
+            {
+            SessionData originalSession = CreateSession("old-token");
+            var store = new InMemorySessionStore(originalSession);
+            var service = CreateService(store);
+            await service.RestoreAsync();
+
+            SessionResult result =
+                await service.ReplaceAccessTokenAsync("replacement-token");
+            SessionData storedSession = await store.LoadAsync();
+
+            Assert.IsTrue(result.Succeeded);
+            Assert.AreEqual("replacement-token", result.Session.AccessToken);
+            Assert.AreEqual(
+                originalSession.RefreshToken,
+                result.Session.RefreshToken);
+            Assert.IsNull(result.Session.ExpiresAtUtc);
+            Assert.AreEqual(result.Session, service.CurrentSession);
+            Assert.AreEqual(result.Session, storedSession);
+            Assert.AreEqual(SessionState.Authenticated, service.State);
+            });
+        }
+
+        [Test]
+        public void ReplaceAccessTokenCreatesExternallyManagedSession()
+        {
+            RunAsync(async () =>
+            {
+            var store = new InMemorySessionStore();
+            var service = CreateService(store);
+
+            SessionResult result =
+                await service.ReplaceAccessTokenAsync(
+                    "external-token",
+                    Now.AddMinutes(20));
+
+            Assert.IsTrue(result.Succeeded);
+            Assert.AreEqual(
+                "external-token",
+                service.CurrentSession.AccessToken);
+            Assert.IsNull(service.CurrentSession.RefreshToken);
+            Assert.AreEqual(
+                Now.AddMinutes(20),
+                service.CurrentSession.ExpiresAtUtc);
+            Assert.AreEqual(
+                service.CurrentSession,
+                await store.LoadAsync());
+            });
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("   ")]
+        [TestCase("invalid token")]
+        [TestCase("invalid\ntoken")]
+        public void ReplaceAccessTokenRejectsInvalidValues(
+            string accessToken)
+        {
+            RunAsync(async () =>
+            {
+            SessionData originalSession = CreateSession("original-token");
+            var store = new InMemorySessionStore(originalSession);
+            var service = CreateService(store);
+            await service.RestoreAsync();
+
+            SessionResult result =
+                await service.ReplaceAccessTokenAsync(accessToken);
+
+            Assert.IsTrue(result.IsFailure);
+            Assert.AreEqual(
+                "invalid_access_token",
+                result.Error.Code);
+            Assert.AreEqual(
+                "A valid access token is required.",
+                result.Error.Message);
+            Assert.AreEqual(originalSession, service.CurrentSession);
+            Assert.AreEqual(originalSession, await store.LoadAsync());
+            });
+        }
+
+        [Test]
+        public void ReplaceAccessTokenPublishesSpecificChangeReason()
+        {
+            RunAsync(async () =>
+            {
+            SessionData originalSession = CreateSession("old-token");
+            var service =
+                CreateService(
+                    new InMemorySessionStore(originalSession));
+            await service.RestoreAsync();
+            SessionChangedEventArgs receivedArgs = null;
+            service.SessionChanged +=
+                (sender, args) => receivedArgs = args;
+
+            await service.ReplaceAccessTokenAsync("replacement-token");
+
+            Assert.IsNotNull(receivedArgs);
+            Assert.AreEqual(
+                SessionChangeReason.AccessTokenReplaced,
+                receivedArgs.Reason);
+            Assert.AreEqual(
+                originalSession,
+                receivedArgs.PreviousSession);
+            Assert.AreEqual(
+                "replacement-token",
+                receivedArgs.CurrentSession.AccessToken);
+            });
+        }
+
         [TestCase(SessionRefreshFailurePolicy.PreserveSession, false)]
         [TestCase(SessionRefreshFailurePolicy.ClearSession, true)]
         public void FailedRefreshClearsOrPreservesSessionBasedOnPolicy(

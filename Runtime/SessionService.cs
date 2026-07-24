@@ -10,6 +10,7 @@ namespace Deucarian.Session
     public sealed class SessionService : ISessionService
     {
         private const string InvalidSessionCode = "invalid_session";
+        private const string InvalidAccessTokenCode = "invalid_access_token";
         private const string LoginExceptionCode = "login_exception";
         private const string RefreshExceptionCode = "refresh_exception";
         private const string RefreshServiceMissingCode = "refresh_service_missing";
@@ -190,6 +191,42 @@ namespace Deucarian.Session
             return await SaveAndApplySessionAsync(
                 loginResult.Session,
                 SessionChangeReason.LoggedIn,
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<SessionResult> ReplaceAccessTokenAsync(
+            string accessToken,
+            DateTimeOffset? expiresAtUtc = null,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (!SessionData.IsValidAccessToken(accessToken))
+            {
+                return Task.FromResult(
+                    SessionResult.Failed(
+                        InvalidAccessTokenCode,
+                        "A valid access token is required."));
+            }
+
+            string refreshToken =
+                currentSession != null
+                    ? currentSession.RefreshToken
+                    : null;
+            var replacement = new SessionData(
+                accessToken,
+                refreshToken,
+                expiresAtUtc);
+            if (replacement.Equals(currentSession))
+            {
+                return Task.FromResult(
+                    SessionResult.Success(currentSession));
+            }
+
+            return SaveAndApplySessionAsync(
+                replacement,
+                SessionChangeReason.AccessTokenReplaced,
                 cancellationToken);
         }
 

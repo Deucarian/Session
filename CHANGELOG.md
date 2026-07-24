@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6 - 2026-07-24
+
+- Added safe runtime access-token replacement for externally managed sessions while preserving refresh tokens and publishing a dedicated change reason.
+- Centralized bearer-token syntax validation in `SessionData`.
+
 ## 1.0.5 - 2026-07-17
 
 - Documented the Basic Usage sample and aligned the exact Logging dependency for the portfolio release.

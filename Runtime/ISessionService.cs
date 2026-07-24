@@ -70,6 +70,20 @@ namespace Deucarian.Session
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Replaces the access token for the current externally managed session.
+        /// The existing refresh token is preserved, while expiry is replaced by
+        /// the supplied value or treated as unknown when omitted.
+        /// </summary>
+        /// <param name="accessToken">Access token supplied by the external session owner.</param>
+        /// <param name="expiresAtUtc">Optional UTC expiry time for the replacement token.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>A session result containing the updated session on success.</returns>
+        Task<SessionResult> ReplaceAccessTokenAsync(
+            string accessToken,
+            DateTimeOffset? expiresAtUtc = null,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Refreshes the current session through the configured refresh service.
         /// </summary>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>

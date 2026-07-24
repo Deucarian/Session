@@ -18,6 +18,9 @@ namespace Deucarian.Session
         Refreshed = 3,
 
         /// <summary>The session was cleared because refresh failed and the clear policy was active.</summary>
-        RefreshFailed = 4
+        RefreshFailed = 4,
+
+        /// <summary>The access token was replaced by an external session owner.</summary>
+        AccessTokenReplaced = 5
     }
 }
