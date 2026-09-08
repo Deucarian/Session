@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7 - Unreleased
+
+- Prevent stale login/refresh/restore work from restoring a logged-out or superseded session. Coalesce refreshes with independent waiter cancellation and serialized storage ownership.
+
 ## 1.0.6 - 2026-07-24
 
 - Added safe runtime access-token replacement for externally managed sessions while preserving refresh tokens and publishing a dedicated change reason.

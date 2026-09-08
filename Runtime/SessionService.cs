@@ -15,15 +15,12 @@ namespace Deucarian.Session
         private const string RefreshExceptionCode = "refresh_exception";
         private const string RefreshServiceMissingCode = "refresh_service_missing";
         private const string NoSessionCode = "no_session";
-        private const string StoreLoadExceptionCode = "store_load_exception";
-        private const string StoreSaveExceptionCode = "store_save_exception";
-        private const string StoreClearExceptionCode = "store_clear_exception";
-
-        private readonly ISessionStore sessionStore;
+        private readonly SessionCommitCoordinator commits;
+        private readonly SessionRefreshCoalescer refreshes = new SessionRefreshCoalescer();
         private readonly ISessionRefreshService refreshService;
         private readonly Func<DateTimeOffset> utcNowProvider;
 
-        private SessionData currentSession;
+        private SessionData currentSession => commits.Current;
         private TimeSpan expiryLeeway;
 
         /// <summary>
@@ -53,7 +50,8 @@ namespace Deucarian.Session
                 throw new ArgumentOutOfRangeException(nameof(expiryLeeway), "Expiry leeway cannot be negative.");
             }
 
-            this.sessionStore = sessionStore;
+            commits = new SessionCommitCoordinator(sessionStore);
+            commits.Changed += OnSessionChanged;
             this.refreshService = refreshService;
             this.expiryLeeway = expiryLeeway ?? TimeSpan.FromMinutes(1);
             RefreshFailurePolicy = refreshFailurePolicy;
@@ -86,7 +84,8 @@ namespace Deucarian.Session
         {
             get
             {
-                return currentSession != null && currentSession.IsExpired(GetUtcNow());
+                SessionData session = currentSession;
+                return session != null && session.IsExpired(GetUtcNow());
             }
         }
 
@@ -95,7 +94,8 @@ namespace Deucarian.Session
         {
             get
             {
-                return currentSession != null && currentSession.IsExpiredOrExpiringWithin(GetUtcNow(), ExpiryLeeway);
+                SessionData session = currentSession;
+                return session != null && session.IsExpiredOrExpiringWithin(GetUtcNow(), ExpiryLeeway);
             }
         }
 
@@ -118,29 +118,10 @@ namespace Deucarian.Session
         public SessionRefreshFailurePolicy RefreshFailurePolicy { get; set; }
 
         /// <inheritdoc />
-        public async Task<SessionResult> RestoreAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<SessionResult> RestoreAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            SessionData restoredSession;
-            try
-            {
-                restoredSession = await sessionStore.LoadAsync(cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                return SessionResult.Failed(
-                    StoreLoadExceptionCode,
-                    "Failed to load the saved session.",
-                    exception);
-            }
-
-            ApplySession(restoredSession, SessionChangeReason.Restored);
-            return restoredSession == null ? SessionResult.Success() : SessionResult.Success(restoredSession);
+            return commits.RestoreAsync(commits.Begin(), cancellationToken);
         }
 
         /// <inheritdoc />
@@ -156,6 +137,9 @@ namespace Deucarian.Session
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            long generation = commits.Begin();
+            try
+            {
             SessionResult loginResult;
             try
             {
@@ -173,6 +157,8 @@ namespace Deucarian.Session
                     exception);
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!commits.IsCurrent(generation)) return SessionCommitCoordinator.Superseded();
             if (loginResult == null)
             {
                 return SessionResult.Failed(InvalidSessionCode, "Login returned no result.");
@@ -188,10 +174,13 @@ namespace Deucarian.Session
                 return SessionResult.Failed(InvalidSessionCode, "Login succeeded without valid session data.");
             }
 
-            return await SaveAndApplySessionAsync(
+            return await commits.CommitAsync(
+                generation,
                 loginResult.Session,
                 SessionChangeReason.LoggedIn,
                 cancellationToken);
+            }
+            finally { commits.Finish(generation); }
         }
 
         /// <inheritdoc />
@@ -210,47 +199,46 @@ namespace Deucarian.Session
                         "A valid access token is required."));
             }
 
-            string refreshToken =
-                currentSession != null
-                    ? currentSession.RefreshToken
-                    : null;
+            long generation = commits.Begin(out SessionData previous);
+            string refreshToken = previous?.RefreshToken;
             var replacement = new SessionData(
                 accessToken,
                 refreshToken,
                 expiresAtUtc);
-            if (replacement.Equals(currentSession))
-            {
-                return Task.FromResult(
-                    SessionResult.Success(currentSession));
-            }
-
-            return SaveAndApplySessionAsync(
+            return commits.CommitAsync(
+                generation,
                 replacement,
                 SessionChangeReason.AccessTokenReplaced,
                 cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<SessionResult> RefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<SessionResult> RefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            if (currentSession == null)
+            long generation = commits.Capture(out SessionData session);
+            if (!commits.IsCurrent(generation)) return Task.FromResult(SessionCommitCoordinator.Superseded());
+            if (session == null)
             {
-                return SessionResult.Failed(NoSessionCode, "No current session is available to refresh.");
+                return Task.FromResult(SessionResult.Failed(NoSessionCode, "No current session is available to refresh."));
             }
 
             if (refreshService == null)
             {
-                return SessionResult.Failed(
+                return Task.FromResult(SessionResult.Failed(
                     RefreshServiceMissingCode,
-                    "No session refresh service was configured.");
+                    "No session refresh service was configured."));
             }
 
+            return refreshes.RunAsync(generation, token => RefreshCoreAsync(generation, session, token), cancellationToken);
+        }
+
+        private async Task<SessionResult> RefreshCoreAsync(long generation, SessionData session, CancellationToken cancellationToken)
+        {
             SessionResult refreshResult;
             try
             {
-                refreshResult = await refreshService.RefreshAsync(currentSession, cancellationToken);
+                refreshResult = await refreshService.RefreshAsync(session, cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -264,6 +252,8 @@ namespace Deucarian.Session
                     exception);
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!commits.IsCurrent(generation)) return SessionCommitCoordinator.Superseded();
             if (refreshResult == null)
             {
                 refreshResult = SessionResult.Failed(InvalidSessionCode, "Refresh returned no result.");
@@ -278,7 +268,9 @@ namespace Deucarian.Session
             {
                 if (RefreshFailurePolicy == SessionRefreshFailurePolicy.ClearSession)
                 {
-                    SessionResult clearResult = await ClearAndApplySessionAsync(
+                    SessionResult clearResult = await commits.CommitAsync(
+                        generation,
+                        null,
                         SessionChangeReason.RefreshFailed,
                         cancellationToken);
 
@@ -291,7 +283,8 @@ namespace Deucarian.Session
                 return refreshResult;
             }
 
-            return await SaveAndApplySessionAsync(
+            return await commits.CommitAsync(
+                generation,
                 refreshResult.Session,
                 SessionChangeReason.Refreshed,
                 cancellationToken);
@@ -300,69 +293,15 @@ namespace Deucarian.Session
         /// <inheritdoc />
         public Task<SessionResult> LogoutAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return ClearAndApplySessionAsync(SessionChangeReason.LoggedOut, cancellationToken);
-        }
-
-        private async Task<SessionResult> SaveAndApplySessionAsync(
-            SessionData session,
-            SessionChangeReason reason,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                await sessionStore.SaveAsync(session, cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                return SessionResult.Failed(
-                    StoreSaveExceptionCode,
-                    "Failed to save the session.",
-                    exception);
-            }
-
-            ApplySession(session, reason);
-            return SessionResult.Success(session);
-        }
-
-        private async Task<SessionResult> ClearAndApplySessionAsync(
-            SessionChangeReason reason,
-            CancellationToken cancellationToken)
-        {
             cancellationToken.ThrowIfCancellationRequested();
-
-            try
-            {
-                await sessionStore.ClearAsync(cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception exception)
-            {
-                return SessionResult.Failed(
-                    StoreClearExceptionCode,
-                    "Failed to clear the session.",
-                    exception);
-            }
-
-            ApplySession(null, reason);
-            return SessionResult.Success();
+            return commits.CommitAsync(commits.Begin(), null, SessionChangeReason.LoggedOut, cancellationToken);
         }
 
-        private void ApplySession(SessionData session, SessionChangeReason reason)
+        private void OnSessionChanged(SessionData previousSession, SessionData session, SessionChangeReason reason)
         {
-            SessionData previousSession = currentSession;
             SessionState previousState = CalculateState(previousSession);
-
-            currentSession = session;
-
-            SessionState currentState = CalculateState(currentSession);
-            bool sessionChanged = !Equals(previousSession, currentSession);
+            SessionState currentState = CalculateState(session);
+            bool sessionChanged = !Equals(previousSession, session);
             bool stateChanged = previousState != currentState;
 
             if (!sessionChanged && !stateChanged)
@@ -377,7 +316,7 @@ namespace Deucarian.Session
                     this,
                     new SessionChangedEventArgs(
                         previousSession,
-                        currentSession,
+                        session,
                         previousState,
                         currentState,
                         reason));
