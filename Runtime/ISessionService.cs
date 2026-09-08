@@ -6,6 +6,8 @@ namespace Deucarian.Session
 {
     /// <summary>
     /// Coordinates session state, persistence, login, logout, restore, and refresh operations.
+    /// New restore, login, token replacement or logout requests supersede older pending work.
+    /// Superseded operations return the stable error code <c>operation_superseded</c> and cannot activate a session.
     /// </summary>
     public interface ISessionService
     {
@@ -85,6 +87,7 @@ namespace Deucarian.Session
 
         /// <summary>
         /// Refreshes the current session through the configured refresh service.
+        /// Concurrent requests share one refresh; canceling a caller stops its wait, while other callers may continue.
         /// </summary>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>A session result containing the refreshed session on success.</returns>
