@@ -23,7 +23,7 @@ namespace Deucarian.Session
         public Task<SessionResult> LogoutAsync(CancellationToken cancellationToken = default) => Run(Service.LogoutAsync, cancellationToken);
         public Task<SessionResult> RefreshAsync(CancellationToken cancellationToken = default) => Run(Service.RefreshAsync, cancellationToken);
         private ISessionService Service => !destroyed ? service ??
-            throw new InvalidOperationException("Configure the session host first.") : throw new ObjectDisposedException(nameof(SessionHost));
+            throw new InvalidOperationException("SessionHost '" + name + "' is not configured. Supply the application's ISessionService once during startup before restoring, refreshing or signing out.") : throw new ObjectDisposedException(nameof(SessionHost));
         private async Task<SessionResult> Run(Func<CancellationToken, Task<SessionResult>> operation, CancellationToken token)
         {
             using (var cancellation = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token, token))
