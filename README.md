@@ -1,5 +1,7 @@
 # Deucarian Session
 
+For simple calls and setup, see [Simple usage](Documentation~/SimpleUsage.md).
+
 ## What this is
 
 `com.deucarian.session` is a standalone Unity UPM package for authenticated session lifecycle management.
