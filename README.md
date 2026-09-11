@@ -1,5 +1,15 @@
 # Deucarian Session
 
+## Typed definition workflow
+
+Session state belongs to one SessionService. Both access paths use that service; this scene uses an empty memory store.
+
+Start with the [Definition Workflow walkthrough](Documentation~/DefinitionWorkflow.md).
+Import **Definition Workflow** in Package Manager for a configured sample scene
+and short caller scripts. The sample keeps typed contracts and service setup explicit, with reusable
+components for scene callers.
+
+
 For simple calls and setup, see [Simple usage](Documentation~/SimpleUsage.md).
 
 ## What this is
@@ -8,7 +18,7 @@ For simple calls and setup, see [Simple usage](Documentation~/SimpleUsage.md).
 
 It stores the current session, restores saved sessions on app start, supports backend-specific login and refresh flows through small interfaces, and notifies listeners when session data or calculated session state changes.
 
-Current package version: `1.0.7`.
+Current package version: `1.1.0`.
 
 ## When to use it
 
