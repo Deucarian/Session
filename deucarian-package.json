@@ -10,7 +10,8 @@
   ],
   "editorAssemblies": [],
   "sampleAssemblies": [
-    "Deucarian.Session.Samples"
+    "Deucarian.Session.Samples",
+    "Deucarian.Session.Samples.DefinitionWorkflow"
   ],
   "testAssemblies": [
     "Deucarian.Session.Tests"
