@@ -1,0 +1,6 @@
+{
+  "name": "Deucarian.Session.Samples.DefinitionWorkflow",
+  "references": [
+    "Deucarian.Session"
+  ]
+}
